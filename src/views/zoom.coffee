@@ -68,8 +68,8 @@ class Chromatic.ZoomView
     @previous_zoom_photo_view = null
     @previous_zoom_photo_view = @current_zoom_photo_view
     @current_zoom_photo_view  = @next_zoom_photo_view
-    @current  = @photos[photos.indexOf(@current) + 1] || @photos[0]
-    next      = @photos[photos.indexOf(@current) + 1] || @photos[0]
+    @current  = @photos[@photos.indexOf(@current) + 1] || @photos[0]
+    next      = @photos[@photos.indexOf(@current) + 1] || @photos[0]
     @next_zoom_photo_view = new Chromatic.ZoomPhotoView(this, next)
     @previous_zoom_photo_view.layout('previous', 0, true)
     @current_zoom_photo_view.layout('current', 0, true)
