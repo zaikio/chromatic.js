@@ -74,7 +74,6 @@ class Chromatic.GalleryView
   layout: =>
     # (1) Find appropriate number of rows by dividing the sum of ideal photo widths by the width of the viewport
     viewport_width = @el[0].getBoundingClientRect().width - parseInt(@el.css('paddingLeft')) - parseInt(@el.css('paddingRight')) - _scrollbar_width() # @el.width() gives wrong rounding
-    console.log viewport_width, _scrollbar_width()
     ideal_height   = parseInt((@el.height() || $(window).height()) / 2)
     summed_width   = _.reduce @photos, ((sum, p) -> sum += p.aspect_ratio * ideal_height), 0
     rows           = Math.round(summed_width / viewport_width)
