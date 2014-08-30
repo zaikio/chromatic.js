@@ -54,12 +54,20 @@ class Chromatic.GalleryView
       $(el).append(@el)
     else
       @el = $(el).addClass('chromatic-gallery')
-    @photos      = photos
-    @zoom_view   = new Chromatic.ZoomView(photos, options)
+    @photos      = _.map photos, (p) -> if _.isObject(p) then p else {small: p}
+    @zoom_view   = new Chromatic.ZoomView(@photos, options)
     @photo_views = _.map @photos, (photo) => new Chromatic.GalleryPhotoView(this, photo, options)
     $(window).on 'resize', _.debounce(@layout, 100)
     @el.on 'scroll', _.throttle(@lazyLoad, 100)
-    @layout()
+
+    if (!!@photos[0].aspect_ratio)
+      @layout()
+    else
+      @calculateAspectRatios()
+
+  calculateAspectRatios: =>
+    layout = _.after @photos.length, @layout
+    _.each @photo_views, (p) -> p.load(layout)
 
   lazyLoad: =>
     threshold = 1000

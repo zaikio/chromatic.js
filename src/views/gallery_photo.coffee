@@ -8,10 +8,15 @@ class Chromatic.GalleryPhotoView
     parent.el.append(@el)
     @el.on  'click', @zoom
 
-  load: =>
+  load: (callback) =>
     return if @loaded
-    @el.css('backgroundImage', "url(#{@photo.small})")
-    @loaded = true
+    image = new Image()
+    image.onload = =>
+      @photo.aspect_ratio = image.width/image.height
+      callback() if callback
+      @el.css('backgroundImage', "url(#{@photo.small})")
+      @loaded = true
+    image.src = @photo.small
 
   unload: =>
     @el.css('backgroundImage', "")

@@ -13,6 +13,14 @@ if not _?
   nativeReduce  = ArrayProto.reduce
   nativeIsArray = Array.isArray
 
+  _.isObject = (obj) ->
+    type = typeof obj
+    type is "function" or type is "object" and !!obj
+
+  _.after = (times, func) ->
+    ->
+      func.apply this, arguments  if --times < 1
+
   _.each = (obj, iterator, context) ->
     try
       if nativeForEach and obj.forEach is nativeForEach
