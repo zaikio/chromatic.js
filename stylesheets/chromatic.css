@@ -1,4 +1,5 @@
 .chromatic-gallery {
+  position: relative;
   margin: 0;
   padding: 4px;
   overflow-y: scroll;

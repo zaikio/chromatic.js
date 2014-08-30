@@ -22,7 +22,7 @@ class Chromatic.GalleryPhotoView
 
   resize: (width, height) ->
     @el.css
-      width: width - parseInt(@el.css('marginLeft'))*2
-      height: height - parseInt(@el.css('marginTop'))*2
-    @top = @el.offset().top
+      width: width - parseInt(@el.css('marginLeft')) - parseInt(@el.css('marginRight'))
+      height: height - parseInt(@el.css('marginTop')) - parseInt(@el.css('marginBottom'))
+    @top = @el.position().top
     @bottom = @top + @el.height()

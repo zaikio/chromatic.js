@@ -9,27 +9,38 @@
       body {
         background: black;
       }
-      #example1 {
+      #example1-a {
         width: 80%;
         height: 500px;
         margin: 200px auto;
         padding: 0px;
         background: white;
       }
-      #example1 div {
+      #example1-a div {
         margin: 0;
       }
-      #example2 {
+      #example1-b {
         width: 60%;
         height: 500px;
         margin: 200px auto;
         background: yellow;
       }
+      #example1-c {
+        width: 60%;
+        height: 500px;
+        margin: 200px auto;
+        padding: 10px 0 0 10px;
+        background: red;
+      }
+      #example1-c div {
+        margin: 0 10px 10px 0;
+      }
     </style>
   </head>
   <body>
-    <div id="example1"></div>
-    <div id="example2"></div>
+    <div id="example1-a"></div>
+    <div id="example1-b"></div>
+    <div id="example1-c"></div>
     <script charset="utf-8">
       $(function(){
         var photos = [
@@ -170,8 +181,9 @@
             "aspect_ratio": 1.5047879616963065
           }
         ];
-        $("#example1").chromatic(photos);
-        $("#example2").chromatic(photos);
+        $("#example1-a").chromatic(photos);
+        $("#example1-b").chromatic(photos);
+        $("#example1-c").chromatic(photos);
       })
     </script>
   </body>
