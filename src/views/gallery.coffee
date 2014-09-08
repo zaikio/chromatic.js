@@ -54,9 +54,10 @@ class Chromatic.GalleryView
       $(el).append(@el)
     else
       @el = $(el).addClass('chromatic-gallery')
-    @photos      = _.map photos, (p) -> if _.isObject(p) then p else {small: p}
-    @zoom_view   = new Chromatic.ZoomView(@photos, options)
-    @photo_views = _.map @photos, (photo) => new Chromatic.GalleryPhotoView(this, photo, options)
+    @photos       = _.map photos, (p) -> if _.isObject(p) then p else {small: p}
+    @zoom_view    = new Chromatic.ZoomView(@photos, options)
+    @photo_views  = _.map @photos, (photo) => new Chromatic.GalleryPhotoView(this, photo, options)
+    @ideal_height = parseInt(@el.children().first().css('height'))
     $(window).on 'resize', _.debounce(@layout, 100)
     @el.on 'scroll', _.throttle(@lazyLoad, 100)
 
@@ -82,7 +83,7 @@ class Chromatic.GalleryView
   layout: =>
     # (1) Find appropriate number of rows by dividing the sum of ideal photo widths by the width of the viewport
     viewport_width = @el[0].getBoundingClientRect().width - parseInt(@el.css('paddingLeft')) - parseInt(@el.css('paddingRight')) - _scrollbar_width() # @el.width() gives wrong rounding
-    ideal_height   = parseInt((@el.height() || $(window).height()) / 2)
+    ideal_height   = @ideal_height || parseInt((@el.height() || $(window).height()) / 2)
     summed_width   = _.reduce @photos, ((sum, p) -> sum += p.aspect_ratio * ideal_height), 0
     rows           = Math.round(summed_width / viewport_width)
 
