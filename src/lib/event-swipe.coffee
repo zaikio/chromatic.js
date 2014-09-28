@@ -36,8 +36,8 @@
     w = undefined
     h = undefined
     event = undefined
-    w = e.target.offsetWidth
-    h = e.target.offsetHeight
+    w = e.currentTarget.offsetWidth
+    h = e.currentTarget.offsetHeight
 
     # Copy over some useful properties from the move event
     event =
