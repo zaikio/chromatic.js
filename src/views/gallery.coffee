@@ -92,7 +92,7 @@ class Chromatic.GalleryView
 
     if rows < 1
       # (2a) Fallback to just standard size when just a few photos
-      _.each @photos, (photo, i) -> @photo_views[i].resize parseInt(ideal_height * photo.aspect_ratio), ideal_height
+      _.each @photos, (photo, i) => @photo_views[i].resize parseInt(ideal_height * photo.aspect_ratio), ideal_height
     else
       # (2b) Partition photos across rows using the aspect_ratio as weight
       weights = _.map @photos, (p) -> parseInt(p.aspect_ratio * 100) # weight must be an integer
