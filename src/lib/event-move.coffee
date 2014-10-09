@@ -44,6 +44,9 @@
 
   # Constructors
   Timer = (fn) ->
+    callback = fn
+    active = false
+    running = false
     trigger = (time) ->
       if active
         callback()
@@ -53,9 +56,6 @@
       else
         running = false
       return
-    callback = fn
-    active = false
-    running = false
     @kick = (fn) ->
       active = true
       trigger()  unless running
@@ -111,8 +111,9 @@
     # webkit yet… we must do the search ourselves...
     i = -1
     l = touchList.length
-    return touchList[i]  if touchList[i].identifier is id  while ++i < l
-    return
+    while ++i < l
+      if touchList[i].identifier is id
+        return touchList[i]
   changedTouch = (e, event) ->
     touch = identifiedTouch(e.changedTouches, event.identifier)
 
@@ -249,9 +250,10 @@
 
   # Handlers that control what happens following a movestart
   activeMousemove = (e) ->
-    event = e.data.event
     timer = e.data.timer
-    updateEvent event, e, e.timeStamp, timer
+    e.data.touch = e
+    e.data.timeStamp = e.timeStamp
+    timer.kick()
     return
   activeMouseend = (e) ->
     event = e.data.event
@@ -281,7 +283,9 @@
     # Stop the interface from gesturing
     e.preventDefault()
     event.targetTouches = e.targetTouches
-    updateEvent event, touch, e.timeStamp, timer
+    e.data.touch = touch
+    e.data.timeStamp = e.timeStamp
+    timer.kick()
     return
   activeTouchend = (e) ->
     event = e.data.event
@@ -313,7 +317,6 @@
     event.velocityY = 0.3 * event.velocityY + 0.7 * event.deltaY / time
     event.pageX = touch.pageX
     event.pageY = touch.pageY
-    timer.kick()
     return
   endEvent = (event, timer, fn) ->
     timer.end ->
@@ -397,13 +400,13 @@
     add: addMethod
     remove: removeMethod
     _default: (e) ->
-      template = undefined
+      event = undefined
       data = undefined
 
       # If no move events were bound to any ancestors of this
       # target, high tail it out of here.
       return  unless e._handled()
-      template =
+      event =
         target: e.target
         startX: e.startX
         startY: e.startY
@@ -421,11 +424,14 @@
         finger: e.finger
 
       data =
-        event: template
+        event: event
         timer: new Timer((time) ->
-          trigger e.target, template
+          updateEvent event, data.touch, data.timeStamp
+          trigger e.target, event
           return
         )
+        touch: undefined
+        timeStamp: undefined
 
       if e.identifier is `undefined`
 
@@ -481,7 +487,7 @@
         "targetTouches"
       ]
       l = props.length
-      jQuery.event.props.push props[l]  if jQuery.event.props.indexOf(props[l]) is -1  while l--
-      return
+      while l--
+          jQuery.event.props.push props[l]  if jQuery.event.props.indexOf(props[l]) is -1
     ) jQuery
   return
