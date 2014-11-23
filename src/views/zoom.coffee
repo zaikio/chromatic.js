@@ -92,12 +92,12 @@ class Chromatic.ZoomView
     @previous_zoom_photo_view.layout('previous', 0, false)
 
   showArrows: =>
-    @el.find(".arrow").stop().animate({opacity: 1}, 200)
+    @el.find(".chromatic-zoom-arrow-left, .chromatic-zoom-arrow-right").stop().animate({opacity: 1}, 200)
     clearTimeout(@arrows_timer)
     @arrows_timer = window.setTimeout((=> @hideArrows(true)), 3000)
 
   hideArrows: (animated) =>
-    @el.find(".arrow").animate({opacity: 0.01}, animated ? 1000 : 0) # still clickable
+    @el.find(".chromatic-zoom-arrow-left, .chromatic-zoom-arrow-right").animate({opacity: 0.01}, animated ? 1000 : 0) # still clickable
 
   layout: (offset=0, animated) =>
     @current_zoom_photo_view.layout('current', offset, animated)
