@@ -55,7 +55,7 @@ class Chromatic.GalleryView
     else
       @el = $(el).addClass('chromatic-gallery')
     @photos       = _.map photos, (p) -> if _.isObject(p) then p else {small: p}
-    @zoom_view    = new Chromatic.ZoomView(@photos, options)
+    #@zoom_view    = new Chromatic.ZoomView(@photos, options)
     @photo_views  = _.map @photos, (photo) => new Chromatic.GalleryPhotoView(this, photo, options)
     @ideal_height = parseInt(@el.children().first().css('height'))
     $(window).on 'resize', _.debounce(@layout, 100)
@@ -113,5 +113,3 @@ class Chromatic.GalleryView
         index += row.length
 
     @lazyLoad()
-
-  zoom: (photo) => @zoom_view.show(photo)

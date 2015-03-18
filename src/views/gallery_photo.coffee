@@ -6,15 +6,23 @@ class Chromatic.GalleryPhotoView
     @photo  = photo
     @el     = $('<div class="chromatic-gallery-photo"/>')
     parent.el.append(@el)
-    @el.on  'click', @zoom
+    #@el.on  'click', @zoom
 
   load: (callback) =>
     return if @loaded
     image = new Image()
+    #console.log(@photo);
     image.onload = =>
       @photo.aspect_ratio = image.width/image.height
       callback() if callback
       @el.css('backgroundImage', "url(#{@photo.small})")
+      #@el.attr('data-test','gijs');
+
+      for key,value of @photo
+        #only pass in mfp and data elements
+        if (key.startsWith("data") || key.startsWith("mfp"))
+          @el.attr(key,value);
+
       @loaded = true
     image.src = @photo.small
 
@@ -22,8 +30,8 @@ class Chromatic.GalleryPhotoView
     @el.css('backgroundImage', "")
     @loaded = false
 
-  zoom: =>
-    @parent.zoom(@photo)
+  #zoom: =>
+    #@parent.zoom(@photo)
 
   resize: (width, height) ->
     @el.css
