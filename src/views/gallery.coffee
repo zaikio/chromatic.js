@@ -61,7 +61,7 @@ class Chromatic.GalleryView
     $(window).on 'resize', _.debounce(@layout, 100)
     @el.on 'scroll', _.throttle(@lazyLoad, 100)
 
-    if (!!@photos[0].aspect_ratio)
+    if (!!@photos[0] || !!@photos[0].aspect_ratio)
       @layout()
     else
       @calculateAspectRatios()

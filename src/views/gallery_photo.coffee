@@ -20,7 +20,7 @@ class Chromatic.GalleryPhotoView
 
       for key,value of @photo
         #only pass in mfp and data elements
-        if (key.startsWith("data") || key.startsWith("mfp"))
+        if ( ( key.lastIndexOf("data", 0) == 0 ) || ( key.lastIndexOf("mfp", 0) == 0 ) || ( key.lastIndexOf("id", 0) == 0 ) )
           @el.attr(key,value);
 
       @loaded = true

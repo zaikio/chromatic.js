@@ -13,7 +13,7 @@ gulp.task('coffee', function() {
 
 gulp.task('javascript', ['coffee'], function() {
   return gulp.src(['./src/lib/*.js', './build/plugin.js'])
-    .pipe(uglify())
+    //.pipe(uglify())
     .pipe(concat('chromatic.js'))
     .pipe(gulp.dest('./dist'))
 })
