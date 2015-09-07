@@ -37,5 +37,5 @@ class Chromatic.GalleryPhotoView
     @el.css
       width: width - parseInt(@el.css('marginLeft')) - parseInt(@el.css('marginRight'))
       height: height - parseInt(@el.css('marginTop')) - parseInt(@el.css('marginBottom'))
-    @top = @el.position().top
+    @top = @el.offset().top
     @bottom = @top + @el.height()
