@@ -5,6 +5,11 @@ class Chromatic.GalleryPhotoView
     @parent = parent
     @photo  = photo
     @el     = $('<div class="chromatic-gallery-photo"/>')
+    for key,value of @photo
+      #only pass in mfp and data elements
+      if ( ( key.lastIndexOf("data", 0) == 0 ) || ( key.lastIndexOf("mfp", 0) == 0 ) || ( key.lastIndexOf("id", 0) == 0 ) )
+        @el.attr(key,value);
+
     parent.el.append(@el)
     #@el.on  'click', @zoom
 
@@ -17,11 +22,6 @@ class Chromatic.GalleryPhotoView
       callback() if callback
       @el.css('backgroundImage', "url(#{@photo.small})")
       #@el.attr('data-test','gijs');
-
-      for key,value of @photo
-        #only pass in mfp and data elements
-        if ( ( key.lastIndexOf("data", 0) == 0 ) || ( key.lastIndexOf("mfp", 0) == 0 ) || ( key.lastIndexOf("id", 0) == 0 ) )
-          @el.attr(key,value);
 
       @loaded = true
     image.src = @photo.small
