@@ -58,8 +58,9 @@ class Chromatic.GalleryView
     #@zoom_view    = new Chromatic.ZoomView(@photos, options)
     @photo_views  = _.map @photos, (photo) => new Chromatic.GalleryPhotoView(this, photo, options)
     @ideal_height = parseInt(@el.children().first().css('height'))
+    @viewport = $( (options || {}).viewport || @el)
     $(window).on 'resize', _.debounce(@layout, 100)
-    @el.on 'scroll', _.throttle(@lazyLoad, 100)
+    @viewport.on 'scroll', _.throttle(@lazyLoad, 100)
 
     if (!!@photos[0] || !!@photos[0].aspect_ratio)
       @layout()
@@ -72,8 +73,8 @@ class Chromatic.GalleryView
 
   lazyLoad: =>
     threshold = 1000
-    viewport_top = @el.scrollTop() - threshold
-    viewport_bottom = (@el.height() || $(window).height()) + @el.scrollTop() + threshold
+    viewport_top = @viewport.scrollTop() - threshold
+    viewport_bottom = (@viewport.height() || $(window).height()) + @viewport.scrollTop() + threshold
     _.each @photo_views, (photo_view) =>
       if photo_view.top < viewport_bottom && photo_view.bottom > viewport_top
         photo_view.load()
