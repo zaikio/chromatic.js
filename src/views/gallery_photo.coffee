@@ -20,14 +20,20 @@ class Chromatic.GalleryPhotoView
     image.onload = =>
       @photo.aspect_ratio = image.width/image.height
       callback() if callback
-      @el.css('backgroundImage', "url(#{@photo.small})")
+      @el.css {
+        backgroundImage: "url(#{@photo.small})"
+        backgroundColor: 'transparent'
+      }
       #@el.attr('data-test','gijs');
 
       @loaded = true
     image.src = @photo.small
 
   unload: =>
-    @el.css('backgroundImage', "")
+    @el.css {
+      backgroundImage: ''
+      backgroundColor: ''
+    }
     @loaded = false
 
   #zoom: =>

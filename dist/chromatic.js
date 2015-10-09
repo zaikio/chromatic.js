@@ -1471,7 +1471,10 @@ if (typeof _ === "undefined" || _ === null) {
           if (callback) {
             callback();
           }
-          _this.el.css('backgroundImage', "url(" + _this.photo.small + ")");
+          _this.el.css({
+            backgroundImage: "url(" + _this.photo.small + ")",
+            backgroundColor: 'transparent'
+          });
           return _this.loaded = true;
         };
       })(this);
@@ -1479,7 +1482,10 @@ if (typeof _ === "undefined" || _ === null) {
     };
 
     GalleryPhotoView.prototype.unload = function() {
-      this.el.css('backgroundImage', "");
+      this.el.css({
+        backgroundImage: '',
+        backgroundColor: ''
+      });
       return this.loaded = false;
     };
 
