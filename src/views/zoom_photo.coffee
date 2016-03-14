@@ -38,6 +38,9 @@ class Chromatic.ZoomPhotoView
     else if _is_css_blur_supported()
       @background_el.addClass('chromatic-zoom-background-blur').css('backgroundImage', "url(#{@photo.small})")
 
+    if @photo.desc
+      @photo_el.html("<div class=\"chromatic-zoom-desc\">#{@photo.desc}</div>")
+
     @el.append(@photo_el, @grain_el, @background_el)
     return this
 
