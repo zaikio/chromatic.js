@@ -11,6 +11,7 @@ class Chromatic.ZoomView
   constructor: (photos, options) ->
     @el = $('<div class="chromatic-zoom"/>')
     @el.html("<div class=\"chromatic-zoom-arrow-left\"></div><div class=\"chromatic-zoom-arrow-right\"></div><div class=\"chromatic-zoom-arrow-up\"></div>")
+    @descVis = false
     @photos = photos
     $(document.body).append(@el)
     @el.hide()
@@ -44,9 +45,11 @@ class Chromatic.ZoomView
 
   show: (photo) =>
     $(document.body).css('overflowY', 'hidden') # prevent translucent scrollbars
-    key 'esc, enter, up', @close
+    key 'esc, enter', @close
     key 'left, k',        _.debounce(@showPrevious, 100, true)
     key 'right, j',       _.debounce(@showNext, 100, true)
+    key 'up',       _.debounce(@showInfo, 100, true)
+    key 'down',       _.debounce(@hideInfo, 100, true)
     $(window).on 'resize orientationchange', @_debouncedLayout
     @hideArrows(false)
     @el.fadeIn(500)
@@ -57,9 +60,9 @@ class Chromatic.ZoomView
     previous  = @photos[@photos.indexOf(photo) - 1] || @photos[@photos.length-1]
     @current  = photo
     next      = @photos[@photos.indexOf(photo) + 1] || @photos[0]
-    @previous_zoom_photo_view = new Chromatic.ZoomPhotoView(this, previous)
-    @current_zoom_photo_view  = new Chromatic.ZoomPhotoView(this, @current)
-    @next_zoom_photo_view     = new Chromatic.ZoomPhotoView(this, next)
+    @previous_zoom_photo_view = new Chromatic.ZoomPhotoView(this, previous, @descVis)
+    @current_zoom_photo_view  = new Chromatic.ZoomPhotoView(this, @current, @descVis)
+    @next_zoom_photo_view     = new Chromatic.ZoomPhotoView(this, next, @descVis)
     @layout()
     @el.show()
 
@@ -75,9 +78,9 @@ class Chromatic.ZoomView
     @current  = @photos[@photos.indexOf(@current) + 1] || @photos[0]
     next      = @photos[@photos.indexOf(@current) + 1] || @photos[0]
     @next_zoom_photo_view = new Chromatic.ZoomPhotoView(this, next)
-    @previous_zoom_photo_view.layout('previous', 0, true)
-    @current_zoom_photo_view.layout('current', 0, true)
-    @next_zoom_photo_view.layout('next', 0, false)
+    @previous_zoom_photo_view.layout('previous', 0, true, @descVis)
+    @current_zoom_photo_view.layout('current', 0, true, @descVis)
+    @next_zoom_photo_view.layout('next', 0, false, @descVis)
 
   showPrevious: (e) =>
     if e
@@ -91,9 +94,9 @@ class Chromatic.ZoomView
     @current  = @photos[@photos.indexOf(@current) - 1] || @photos[@photos.length-1]
     previous  = @photos[@photos.indexOf(@current) - 1] || @photos[@photos.length-1]
     @previous_zoom_photo_view = new Chromatic.ZoomPhotoView(this, previous)
-    @next_zoom_photo_view.layout('next', 0, true)
-    @current_zoom_photo_view.layout('current', 0, true)
-    @previous_zoom_photo_view.layout('previous', 0, false)
+    @next_zoom_photo_view.layout('next', 0, true, @descVis)
+    @current_zoom_photo_view.layout('current', 0, true, @descVis)
+    @previous_zoom_photo_view.layout('previous', 0, false, @descVis)
 
   showInfo: (e) =>
     if e
@@ -101,6 +104,7 @@ class Chromatic.ZoomView
        e.stopPropagation()
        if e.type == "keydown" then @hideArrows() else @showArrows()
     @el.find(".chromatic-zoom-arrow-up").removeClass('chromatic-zoom-arrow-up').addClass('chromatic-zoom-arrow-down')
+    @descVis = true
     description = @el.find(".chromatic-zoom-desc")
     if description
       description.animate({opacity: 0.7}, 200)
@@ -111,6 +115,7 @@ class Chromatic.ZoomView
        e.stopPropagation()
        if e.type == "keydown" then @hideArrows() else @showArrows()
     @el.find(".chromatic-zoom-arrow-down").removeClass('chromatic-zoom-arrow-down').addClass('chromatic-zoom-arrow-up')
+    @descVis = false
     description = @el.find(".chromatic-zoom-desc")
     if description
       description.animate({opacity: 0.01}, 200)
@@ -123,10 +128,10 @@ class Chromatic.ZoomView
   hideArrows: (animated) =>
     @el.find(".chromatic-zoom-arrow-left, .chromatic-zoom-arrow-right, .chromatic-zoom-arrow-up, .chromatic-zoom-arrow-down").animate({opacity: 0.01}, animated ? 1000 : 0) # still clickable
 
-  layout: (offset=0, animated) =>
-    @current_zoom_photo_view.layout('current', offset, animated)
-    @previous_zoom_photo_view.layout('previous', offset, animated)
-    @next_zoom_photo_view.layout('next', offset, animated)
+  layout: (offset=0, animated, descVis) =>
+    @current_zoom_photo_view.layout('current', offset, animated, @descVis)
+    @previous_zoom_photo_view.layout('previous', offset, animated, @descVis)
+    @next_zoom_photo_view.layout('next', offset, animated, @descVis)
 
   # Swipe
   move: (e) => @layout(e.distX, false)

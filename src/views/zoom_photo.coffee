@@ -23,6 +23,7 @@ class Chromatic.ZoomPhotoView
     @el.remove()
 
   render: =>
+    @desc_el = $('<div class="chromatic-zoom-desc"></div>')
     @photo_el      = $('<div class="chromatic-zoom-photo"></div>')
     @grain_el      = $('<div class="chromatic-zoom-grain"></div>')
     @background_el = $('<div class="chromatic-zoom-background"></div>')
@@ -39,12 +40,13 @@ class Chromatic.ZoomPhotoView
       @background_el.addClass('chromatic-zoom-background-blur').css('backgroundImage', "url(#{@photo.small})")
 
     if @photo.desc
-      @photo_el.html("<div class=\"chromatic-zoom-desc\">#{@photo.desc}</div>")
+      @desc_el.append(@photo.desc)
+      @photo_el.append(@desc_el)
 
     @el.append(@photo_el, @grain_el, @background_el)
     return this
 
-  layout: (pos, offset=0, animated) =>
+  layout: (pos, offset=0, animated, descVis) =>
     container = $(window)
 
     if container.width() / container.height() > @photo.aspect_ratio
@@ -58,6 +60,11 @@ class Chromatic.ZoomPhotoView
       height: height
       width:  width
       top:    (container.height() - height) / 2
+
+    if descVis
+      @desc_el.css('opacity', '0.7')
+    else
+      @desc_el.css('opacity', '0.01')
 
     left = switch pos
       when 'previous' then -width-20+offset
