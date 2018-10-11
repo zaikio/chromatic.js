@@ -1,4 +1,4 @@
-@Chromatic = @Chromatic or {}
+@Chromatic = Chromatic = @Chromatic or {}
 
 # Based on Óscar López implementation in Python (http://stackoverflow.com/a/7942946)
 _linear_partition = (->
@@ -47,7 +47,7 @@ _scrollbar_width = (->
     _cache = w1 - w2
 )()
 
-class Chromatic.GalleryView
+class @Chromatic.GalleryView
   constructor: (el, photos, options) ->
     if el[0] == document.body
       @el = $('<div class="chromatic-gallery-full"/>')
