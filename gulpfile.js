@@ -9,17 +9,19 @@ gulp.task('coffee', function() {
     .pipe(coffee())
     .pipe(concat('plugin.js'))
     .pipe(gulp.dest('./build'))
-})
+});
 
 gulp.task('javascript', ['coffee'], function() {
   return gulp.src(['./src/lib/*.js', './build/plugin.js'])
-    //.pipe(uglify())
     .pipe(concat('chromatic.js'))
     .pipe(gulp.dest('./dist'))
-})
+    .pipe(uglify())
+    .pipe(concat('chromatic.min.js')) // renaming actually
+    .pipe(gulp.dest('./dist'))
+});
 
 gulp.task('build-and-clean', ['javascript'], function() {
   del(['build']);
-})
+});
 
-gulp.task('default', ['build-and-clean'])
+gulp.task('default', ['build-and-clean']);
