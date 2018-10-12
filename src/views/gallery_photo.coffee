@@ -1,6 +1,6 @@
 @Chromatic = @Chromatic or {}
 
-class Chromatic.GalleryPhotoView
+class @Chromatic.GalleryPhotoView
   constructor: (parent, photo, options) ->
     @parent = parent
     @photo  = photo

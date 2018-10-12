@@ -1197,10 +1197,10 @@ if (typeof _ === "undefined" || _ === null) {
 }
 
 (function() {
-  var _linear_partition, _scrollbar_width,
+  var Chromatic, _linear_partition, _scrollbar_width,
     bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  this.Chromatic = this.Chromatic || {};
+  this.Chromatic = Chromatic = this.Chromatic || {};
 
   _linear_partition = (function() {
     var _cache;
@@ -1320,7 +1320,7 @@ if (typeof _ === "undefined" || _ === null) {
     };
   })();
 
-  Chromatic.GalleryView = (function() {
+  this.Chromatic.GalleryView = (function() {
     function GalleryView(el, photos, options) {
       this.layout = bind(this.layout, this);
       this.lazyLoad = bind(this.lazyLoad, this);
@@ -1441,7 +1441,7 @@ if (typeof _ === "undefined" || _ === null) {
 
   this.Chromatic = this.Chromatic || {};
 
-  Chromatic.GalleryPhotoView = (function() {
+  this.Chromatic.GalleryPhotoView = (function() {
     function GalleryPhotoView(parent, photo, options) {
       this.unload = bind(this.unload, this);
       this.load = bind(this.load, this);
@@ -1505,6 +1505,10 @@ if (typeof _ === "undefined" || _ === null) {
 }).call(this);
 
 (function() {
+  var Chromatic;
+
+  Chromatic = this.Chromatic || {};
+
   $.fn.extend({
     chromatic: function(photos, options) {
       new Chromatic.GalleryView(this, photos, options);
