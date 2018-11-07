@@ -2,7 +2,7 @@
   "name": "chromatic.js",
   "version": "0.1.1",
   "description": "The Chromatic jQuery Plugin",
-  "main": "gulpfile.js",
+  "main": "dist/chromatic.js",
   "scripts": {
     "dist/chromatic.es.js": "browserify src/plugin.coffee --extension='.coffee' -t coffeeify -s Chromatic > dist/chromatic.es.js",
     "dist/chromatic.js": "babel --presets @babel/preset-env --no-babelrc dist/chromatic.es.js | derequire > dist/chromatic.js",
