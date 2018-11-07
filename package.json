@@ -4,6 +4,9 @@
   "description": "The Chromatic jQuery Plugin",
   "main": "gulpfile.js",
   "scripts": {
+    "dist/chromatic.es.js": "browserify src/plugin.coffee --extension='.coffee' -t coffeeify -s Chromatic > dist/chromatic.es.js",
+    "dist/chromatic.js": "babel --presets @babel/preset-env --no-babelrc dist/chromatic.es.js | derequire > dist/chromatic.js",
+    "dist/chromatic.min.js": "uglifyjs dist/chromatic.js > dist/chromatic.min.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,10 +20,14 @@
   },
   "homepage": "https://github.com/prezly/chromatic.js",
   "devDependencies": {
-    "del": "^0.1.3",
-    "gulp": "^3.8.10",
-    "gulp-coffee": "^2.2.0",
-    "gulp-concat": "^2.4.2",
-    "gulp-uglify": "^1.0.1"
+    "@babel/cli": "^7.1.5",
+    "@babel/core": "^7.1.5",
+    "@babel/preset-env": "^7.1.5",
+    "babelify": "^10.0.0",
+    "browserify": "^16.2.3",
+    "coffeeify": "^3.0.1",
+    "coffeescript": "^2.3.2",
+    "derequire": "^2.0.6",
+    "uglify-js": "^3.4.9"
   }
 }

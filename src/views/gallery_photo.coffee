@@ -1,6 +1,4 @@
-@Chromatic = @Chromatic or {}
-
-class @Chromatic.GalleryPhotoView
+class GalleryPhotoView
   constructor: (parent, photo, options) ->
     @parent = parent
     @photo  = photo
@@ -45,3 +43,5 @@ class @Chromatic.GalleryPhotoView
       height: height - parseInt(@el.css('marginTop')) - parseInt(@el.css('marginBottom'))
     @top = @el.offset().top
     @bottom = @top + @el.height()
+
+module.exports = GalleryPhotoView;

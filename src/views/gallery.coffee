@@ -1,4 +1,4 @@
-@Chromatic = Chromatic = @Chromatic or {}
+GalleryPhotoView = require './gallery_photo';
 
 # Based on Óscar López implementation in Python (http://stackoverflow.com/a/7942946)
 _linear_partition = (->
@@ -47,7 +47,7 @@ _scrollbar_width = (->
     _cache = w1 - w2
 )()
 
-class @Chromatic.GalleryView
+class GalleryView
   constructor: (el, photos, options) ->
     if el[0] == document.body
       @el = $('<div class="chromatic-gallery-full"/>')
@@ -56,7 +56,7 @@ class @Chromatic.GalleryView
       @el = $(el).addClass('chromatic-gallery')
     @photos       = _.map photos, (p) -> if _.isObject(p) then p else {small: p}
     #@zoom_view    = new Chromatic.ZoomView(@photos, options)
-    @photo_views  = _.map @photos, (photo) => new Chromatic.GalleryPhotoView(this, photo, options)
+    @photo_views  = _.map @photos, (photo) => new GalleryPhotoView(this, photo, options)
     @ideal_height = parseInt(@el.children().first().css('height'))
     @viewport = $( (options || {}).viewport || @el)
     $(window).on 'resize', _.debounce(@layout, 100)
@@ -114,3 +114,5 @@ class @Chromatic.GalleryView
         index += row.length
 
     @lazyLoad()
+
+module.exports = GalleryView
