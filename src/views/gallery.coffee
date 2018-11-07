@@ -1,3 +1,4 @@
+_ = require '../lib/underscore-parts';
 GalleryPhotoView = require './gallery_photo';
 
 # Based on Óscar López implementation in Python (http://stackoverflow.com/a/7942946)
