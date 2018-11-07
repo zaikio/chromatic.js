@@ -1,1 +1,3 @@
 node_modules
+dist/chromatic.es.js
+package-lock.json
