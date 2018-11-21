@@ -74,10 +74,12 @@ class GalleryView
 
   lazyLoad: =>
     threshold = 1000
-    viewport_top = @viewport.scrollTop() - threshold
-    viewport_bottom = (@viewport.height() || $(window).height()) + @viewport.scrollTop() + threshold
+    viewport = {
+      top: @viewport.scrollTop() - threshold
+      bottom: (@viewport.height() || $(window).height()) + @viewport.scrollTop() + threshold
+    }
     _.each @photo_views, (photo_view) =>
-      if photo_view.top < viewport_bottom && photo_view.bottom > viewport_top
+      if photo_view.is_visible(viewport)
         photo_view.load()
       else
         photo_view.unload()

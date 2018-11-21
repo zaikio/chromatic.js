@@ -34,6 +34,12 @@ class GalleryPhotoView
       @loaded = true
     image.src = src
 
+  is_visible: (viewport) =>
+    top = @el.offset().top
+    bottom = top + @el.height()
+    is_visible = (top < viewport.bottom) && (bottom > viewport.top)
+    return is_visible
+
   unload: =>
     @el.css {
       backgroundImage: ''
@@ -48,7 +54,5 @@ class GalleryPhotoView
     @el.css
       width: width - parseInt(@el.css('marginLeft')) - parseInt(@el.css('marginRight'))
       height: height - parseInt(@el.css('marginTop')) - parseInt(@el.css('marginBottom'))
-    @top = @el.offset().top
-    @bottom = @top + @el.height()
 
 module.exports = GalleryPhotoView;
