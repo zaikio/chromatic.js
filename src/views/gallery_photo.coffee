@@ -19,19 +19,20 @@ class GalleryPhotoView
 
   load: (callback) =>
     return if @loaded
+    src = @photo.src or @photo.small
     image = new Image()
     #console.log(@photo);
     image.onload = =>
       @photo.aspect_ratio = image.width/image.height
       callback() if callback
       @el.css {
-        backgroundImage: "url(#{@photo.small})"
+        backgroundImage: "url(#{src})"
         backgroundColor: 'transparent'
       }
       #@el.attr('data-test','gijs');
 
       @loaded = true
-    image.src = @photo.small
+    image.src = src
 
   unload: =>
     @el.css {
