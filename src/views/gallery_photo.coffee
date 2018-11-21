@@ -1,15 +1,21 @@
-class GalleryPhotoView
-  constructor: (parent, photo, options) ->
-    @parent = parent
-    @photo  = photo
-    @el     = $('<div class="chromatic-gallery-photo"/>')
-    for key,value of @photo
-      #only pass in mfp and data elements
-      if ( ( key.lastIndexOf("data", 0) == 0 ) || ( key.lastIndexOf("mfp", 0) == 0 ) || ( key.lastIndexOf("id", 0) == 0 ) )
-        @el.attr(key,value);
+createPhotoElement = (photo, { className = 'chromatic-gallery-photo' }) =>
+  element = $('<div/>').addClass(className)
 
-    parent.el.append(@el)
-    #@el.on  'click', @zoom
+  for key,value of (photo.attributes or {})
+    element.attr(key,value);
+
+  return element
+
+class GalleryPhotoView
+  constructor: (gallery, photo, options = {}) ->
+    @gallery = gallery
+    @photo   = photo
+    @el      = (options.createPhotoElement or createPhotoElement)(photo, options, createPhotoElement)
+
+    gallery.el.append(@el)
+
+    if options.onClick
+      @el.on 'click', (event) -> options.onClick.call(this, event, photo)
 
   load: (callback) =>
     return if @loaded

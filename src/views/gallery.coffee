@@ -49,7 +49,7 @@ _scrollbar_width = (->
 )()
 
 class GalleryView
-  constructor: (el, photos, options) ->
+  constructor: (el, photos, options = {}) ->
     if el[0] == document.body
       @el = $('<div class="chromatic-gallery-full"/>')
       $(el).append(@el)
@@ -57,7 +57,7 @@ class GalleryView
       @el = $(el).addClass('chromatic-gallery')
     @photos       = _.map photos, (p) -> if _.isObject(p) then p else {small: p}
     #@zoom_view    = new Chromatic.ZoomView(@photos, options)
-    @photo_views  = _.map @photos, (photo) => new GalleryPhotoView(this, photo, options)
+    @photo_views  = _.map @photos, (photo) => new GalleryPhotoView(this, photo, options.photo || {})
     @ideal_height = parseInt(@el.children().first().css('height'))
     @viewport = $( (options || {}).viewport || @el)
     $(window).on 'resize', _.debounce(@layout, 100)
