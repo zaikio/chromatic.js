@@ -1527,8 +1527,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       GalleryView =
       /*#__PURE__*/
       function () {
-        function GalleryView(el, photos, options) {
+        function GalleryView(el, photos) {
           var _this = this;
+
+          var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
           _classCallCheck(this, GalleryView);
 
@@ -1554,7 +1556,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           }); //@zoom_view    = new Chromatic.ZoomView(@photos, options)
 
           this.photo_views = _.map(this.photos, function (photo) {
-            return new GalleryPhotoView(_this, photo, options);
+            return new GalleryPhotoView(_this, photo, options.photo || {});
           });
           this.ideal_height = parseInt(this.el.children().first().css('height'));
           this.viewport = $((options || {}).viewport || this.el);
@@ -1668,32 +1670,43 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       "./gallery_photo": 8
     }],
     8: [function (_dereq_, module, exports) {
-      var GalleryPhotoView;
+      var GalleryPhotoView, createPhotoElement;
+
+      createPhotoElement = function createPhotoElement(photo, _ref2) {
+        var _ref2$className = _ref2.className,
+            className = _ref2$className === void 0 ? 'chromatic-gallery-photo' : _ref2$className;
+        var element, key, ref, value;
+        element = $('<div/>').addClass(className);
+        ref = photo.attributes || {};
+
+        for (key in ref) {
+          value = ref[key];
+          element.attr(key, value);
+        }
+
+        return element;
+      };
 
       GalleryPhotoView =
       /*#__PURE__*/
       function () {
-        function GalleryPhotoView(parent, photo, options) {
-          _classCallCheck(this, GalleryPhotoView);
+        function GalleryPhotoView(gallery, photo) {
+          var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
-          var key, ref, value; //@el.on  'click', @zoom
+          _classCallCheck(this, GalleryPhotoView);
 
           this.load = this.load.bind(this);
           this.unload = this.unload.bind(this);
-          this.parent = parent;
+          this.gallery = gallery;
           this.photo = photo;
-          this.el = $('<div class="chromatic-gallery-photo"/>');
-          ref = this.photo;
+          this.el = (options.createPhotoElement || createPhotoElement)(photo, options, createPhotoElement);
+          gallery.el.append(this.el);
 
-          for (key in ref) {
-            value = ref[key]; //only pass in mfp and data elements
-
-            if (key.lastIndexOf("data", 0) === 0 || key.lastIndexOf("mfp", 0) === 0 || key.lastIndexOf("id", 0) === 0) {
-              this.el.attr(key, value);
-            }
+          if (options.onClick) {
+            this.el.on('click', function (event) {
+              return options.onClick.call(this, event, photo);
+            });
           }
-
-          parent.el.append(this.el);
         }
 
         _createClass(GalleryPhotoView, [{
