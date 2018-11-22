@@ -1582,12 +1582,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         }, {
           key: "lazyLoad",
           value: function lazyLoad() {
-            var threshold, viewport_bottom, viewport_top;
+            var threshold, viewport;
             threshold = 1000;
-            viewport_top = this.viewport.scrollTop() - threshold;
-            viewport_bottom = (this.viewport.height() || $(window).height()) + this.viewport.scrollTop() + threshold;
+            viewport = {
+              top: this.viewport.scrollTop() - threshold,
+              bottom: (this.viewport.height() || $(window).height()) + this.viewport.scrollTop() + threshold
+            };
             return _.each(this.photo_views, function (photo_view) {
-              if (photo_view.top < viewport_bottom && photo_view.bottom > viewport_top) {
+              if (photo_view.is_visible(viewport)) {
                 return photo_view.load();
               } else {
                 return photo_view.unload();
@@ -1696,6 +1698,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           _classCallCheck(this, GalleryPhotoView);
 
           this.load = this.load.bind(this);
+          this.is_visible = this.is_visible.bind(this);
           this.unload = this.unload.bind(this);
           this.gallery = gallery;
           this.photo = photo;
@@ -1714,12 +1717,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           value: function load(callback) {
             var _this3 = this;
 
-            var image;
+            var image, src;
 
             if (this.loaded) {
               return;
             }
 
+            src = this.photo.src || this.photo.small;
             image = new Image(); //console.log(@photo);
 
             image.onload = function () {
@@ -1730,7 +1734,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
               }
 
               _this3.el.css({
-                backgroundImage: "url(".concat(_this3.photo.small, ")"),
+                backgroundImage: "url(".concat(src, ")"),
                 backgroundColor: 'transparent'
               }); //@el.attr('data-test','gijs');
 
@@ -1738,7 +1742,16 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
               return _this3.loaded = true;
             };
 
-            return image.src = this.photo.small;
+            return image.src = src;
+          }
+        }, {
+          key: "is_visible",
+          value: function is_visible(viewport) {
+            var bottom, is_visible, top;
+            top = this.el.offset().top;
+            bottom = top + this.el.height();
+            is_visible = top < viewport.bottom && bottom > viewport.top;
+            return is_visible;
           }
         }, {
           key: "unload",
@@ -1754,12 +1767,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         }, {
           key: "resize",
           value: function resize(width, height) {
-            this.el.css({
+            return this.el.css({
               width: width - parseInt(this.el.css('marginLeft')) - parseInt(this.el.css('marginRight')),
               height: height - parseInt(this.el.css('marginTop')) - parseInt(this.el.css('marginBottom'))
             });
-            this.top = this.el.offset().top;
-            return this.bottom = this.top + this.el.height();
           }
         }]);
 
