@@ -103,18 +103,28 @@ class GalleryView
       partition = _linear_partition(weights, rows)
 
       # (3) Iterate through partition
-      index = 0
+      offset = 0
       _.each partition, (row) =>
-        row_buffer = []
-        _.each row, (p, i) => row_buffer.push(@photos[index+i])
-        summed_ars = _.reduce row_buffer, ((sum, p) -> sum += p.aspect_ratio), 0
-        summed_width = 0
-        _.each row_buffer, (p, i) =>
-          width  = if i == row_buffer.length-1 then viewport_width - summed_width else parseInt(viewport_width / summed_ars * p.aspect_ratio)
-          height = parseInt(viewport_width / summed_ars)
-          @photo_views[index+i].resize width, height
-          summed_width += width
-        index += row.length
+        row_photos = []
+        row_photo_views = []
+        _.each row, (p, i) => row_photos.push(@photos[offset+i])
+        _.each row, (p, i) => row_photo_views.push(@photo_views[offset+i])
+
+        row_margins = row_photo_views.map ((photo_view) -> photo_view.margins())
+        row_summed_horizontal_margins = row_margins.reduce ((sum, { left, right }) -> sum += left + right ), 0
+        row_summed_ars = _.reduce row_photos, ((sum, p) -> sum += p.aspect_ratio), 0
+        row_width = viewport_width - row_summed_horizontal_margins
+        row_height = parseInt(row_width / row_summed_ars)
+        row_used_width = 0
+
+        _.each row, (p, i) =>
+          width = parseInt(row_width / row_summed_ars * row_photos[i].aspect_ratio)
+          width = row_width - row_used_width if i == row_photos.length - 1
+          height = row_height
+          row_photo_views[i].resize(width, height)
+          row_used_width += width
+
+        offset += row.length
 
     @lazyLoad()
 

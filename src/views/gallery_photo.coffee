@@ -50,9 +50,13 @@ class GalleryPhotoView
   #zoom: =>
     #@parent.zoom(@photo)
 
-  resize: (width, height) ->
-    @el.css
-      width: width - parseInt(@el.css('marginLeft')) - parseInt(@el.css('marginRight'))
-      height: height - parseInt(@el.css('marginTop')) - parseInt(@el.css('marginBottom'))
+  margins: =>
+    top: parseInt @el.css('marginTop')
+    left: parseInt @el.css('marginLeft')
+    bottom: parseInt @el.css('marginBottom')
+    right: parseInt @el.css('marginRight')
+
+  resize: (width, height) =>
+    @el.css({ width, height })
 
 module.exports = GalleryPhotoView;
