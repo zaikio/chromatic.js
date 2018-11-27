@@ -105,20 +105,18 @@ class GalleryView
       # (3) Iterate through partition
       offset = 0
       _.each partition, (row) =>
-        row_photos = []
-        row_photo_views = []
-        _.each row, (p, i) => row_photos.push(@photos[offset+i])
-        _.each row, (p, i) => row_photo_views.push(@photo_views[offset+i])
+        row_photos = row.reduce ((buffer, weight, i) => buffer.concat([@photos[offset + i]])), []
+        row_photo_views = row.reduce ((buffer, weight, i) => buffer.concat([@photo_views[offset + i]])), []
 
         row_margins = row_photo_views.map ((photo_view) -> photo_view.margins())
         row_summed_horizontal_margins = row_margins.reduce ((sum, { left, right }) -> sum += left + right ), 0
-        row_summed_ars = _.reduce row_photos, ((sum, p) -> sum += p.aspect_ratio), 0
+        row_summed_aspect_ratios = row_photos.reduce ((sum, photo) -> sum += photo.aspect_ratio), 0
         row_width = viewport_width - row_summed_horizontal_margins
-        row_height = parseInt(row_width / row_summed_ars)
+        row_height = parseInt(row_width / row_summed_aspect_ratios)
         row_used_width = 0
 
         _.each row, (p, i) =>
-          width = parseInt(row_width / row_summed_ars * row_photos[i].aspect_ratio)
+          width = parseInt(row_width / row_summed_aspect_ratios * row_photos[i].aspect_ratio)
           width = row_width - row_used_width if i == row_photos.length - 1
           height = row_height
           row_photo_views[i].resize(width, height)
