@@ -1601,7 +1601,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           value: function layout() {
             var _this2 = this;
 
-            var ideal_height, index, partition, rows, summed_width, viewport_width, weights; // (1) Find appropriate number of rows by dividing the sum of ideal photo widths by the width of the viewport
+            var ideal_height, offset, partition, rows, summed_width, viewport_width, weights; // (1) Find appropriate number of rows by dividing the sum of ideal photo widths by the width of the viewport
 
             $(document.body).css('overflowY', 'scroll');
             viewport_width = this.el[0].getBoundingClientRect().width - parseInt(this.el.css('paddingLeft')) - parseInt(this.el.css('paddingRight')); // @el.width() gives wrong rounding
@@ -1630,32 +1630,45 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
               });
               partition = _linear_partition(weights, rows); // (3) Iterate through partition
 
-              index = 0;
+              offset = 0;
 
               _.each(partition, function (row) {
-                var row_buffer, summed_ars;
-                row_buffer = [];
+                var row_height, row_margins, row_photo_views, row_photos, row_summed_aspect_ratios, row_summed_horizontal_margins, row_used_width, row_width;
+                row_photos = row.reduce(function (buffer, weight, i) {
+                  return buffer.concat([_this2.photos[offset + i]]);
+                }, []);
+                row_photo_views = row.reduce(function (buffer, weight, i) {
+                  return buffer.concat([_this2.photo_views[offset + i]]);
+                }, []);
+                row_margins = row_photo_views.map(function (photo_view) {
+                  return photo_view.margins();
+                });
+                row_summed_horizontal_margins = row_margins.reduce(function (sum, _ref2) {
+                  var left = _ref2.left,
+                      right = _ref2.right;
+                  return sum += left + right;
+                }, 0);
+                row_summed_aspect_ratios = row_photos.reduce(function (sum, photo) {
+                  return sum += photo.aspect_ratio;
+                }, 0);
+                row_width = viewport_width - row_summed_horizontal_margins;
+                row_height = parseInt(row_width / row_summed_aspect_ratios);
+                row_used_width = 0;
 
                 _.each(row, function (p, i) {
-                  return row_buffer.push(_this2.photos[index + i]);
-                });
-
-                summed_ars = _.reduce(row_buffer, function (sum, p) {
-                  return sum += p.aspect_ratio;
-                }, 0);
-                summed_width = 0;
-
-                _.each(row_buffer, function (p, i) {
                   var height, width;
-                  width = i === row_buffer.length - 1 ? viewport_width - summed_width : parseInt(viewport_width / summed_ars * p.aspect_ratio);
-                  height = parseInt(viewport_width / summed_ars);
+                  width = parseInt(row_width / row_summed_aspect_ratios * row_photos[i].aspect_ratio);
 
-                  _this2.photo_views[index + i].resize(width, height);
+                  if (i === row_photos.length - 1) {
+                    width = row_width - row_used_width;
+                  }
 
-                  return summed_width += width;
+                  height = row_height;
+                  row_photo_views[i].resize(width, height);
+                  return row_used_width += width;
                 });
 
-                return index += row.length;
+                return offset += row.length;
               });
             }
 
@@ -1674,9 +1687,9 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     8: [function (_dereq_, module, exports) {
       var GalleryPhotoView, createPhotoElement;
 
-      createPhotoElement = function createPhotoElement(photo, _ref2) {
-        var _ref2$className = _ref2.className,
-            className = _ref2$className === void 0 ? 'chromatic-gallery-photo' : _ref2$className;
+      createPhotoElement = function createPhotoElement(photo, _ref3) {
+        var _ref3$className = _ref3.className,
+            className = _ref3$className === void 0 ? 'chromatic-gallery-photo' : _ref3$className;
         var element, key, ref, value;
         element = $('<div/>').addClass(className);
         ref = photo.attributes || {};
@@ -1699,7 +1712,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
           this.load = this.load.bind(this);
           this.is_visible = this.is_visible.bind(this);
-          this.unload = this.unload.bind(this);
+          this.unload = this.unload.bind(this); //zoom: =>
+          //@parent.zoom(@photo)
+
+          this.margins = this.margins.bind(this);
+          this.resize = this.resize.bind(this);
           this.gallery = gallery;
           this.photo = photo;
           this.el = (options.createPhotoElement || createPhotoElement)(photo, options, createPhotoElement);
@@ -1761,15 +1778,23 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
               backgroundColor: ''
             });
             return this.loaded = false;
-          } //zoom: =>
-          //@parent.zoom(@photo)
-
+          }
+        }, {
+          key: "margins",
+          value: function margins() {
+            return {
+              top: parseInt(this.el.css('marginTop')),
+              left: parseInt(this.el.css('marginLeft')),
+              bottom: parseInt(this.el.css('marginBottom')),
+              right: parseInt(this.el.css('marginRight'))
+            };
+          }
         }, {
           key: "resize",
           value: function resize(width, height) {
             return this.el.css({
-              width: width - parseInt(this.el.css('marginLeft')) - parseInt(this.el.css('marginRight')),
-              height: height - parseInt(this.el.css('marginTop')) - parseInt(this.el.css('marginBottom'))
+              width: width,
+              height: height
             });
           }
         }]);
